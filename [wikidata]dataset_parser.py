@@ -11,6 +11,7 @@ import bz2
 import re
 import psutil
 process = psutil.Process(os.getpid())
+import shutil
 
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from multiprocessing import current_process, Pool
@@ -26,7 +27,7 @@ dataset_directory = os.path.join(cfg.get("directory", "dataset"), cfg.get("direc
 storage_directory = cfg.get("directory", "pickles")
 
 processed_files = [re.search(r"\[(.*)\]", x)[1] for x in os.listdir(storage_directory) if os.path.isfile(os.path.join(storage_directory, x))] 
-dataset_files = sorted([dataset_directory + os.path.sep + f for f in os.listdir(dataset_directory) if os.path.isfile(os.path.join(dataset_directory, f)) and f not in processed_files])
+dataset_files = sorted([os.path.join(dataset_directory, f) for f in os.listdir(dataset_directory) if os.path.isfile(os.path.join(dataset_directory, f)) and f not in processed_files])
 
 
 class States:
@@ -45,7 +46,7 @@ def parse_page(page_content, dataset_file):
         print(dataset_file)
         print(len(page_content))
         ts_now_str = str(pd.datetime.now())[:-7].replace(" ","_")
-        dump_filename = "[{file}]{ts_now}.txt".format(file=dataset_file, ts_now=ts_now_str)
+        dump_filename = "error_dump-[{file}]{ts_now}.txt".format(file=dataset_file, ts_now=ts_now_str)
         dump_filename = os.path.join(cfg.get("directory", "error_dumps"), dump_filename)
         print("Dump filename: {fn}".format(fn=dump_filename))
         with open(dump_filename, "w") as error_dump:
@@ -108,15 +109,15 @@ def parse_page(page_content, dataset_file):
     return revisions
     
     
-def parse_file(dataset_file):
-    processor_index = current_process()._identity[0]
-    bar_offset = (processor_index - 1) * 2
+def parse_file(dataset_file):   
+    processor_index = current_process()._identity[0] % cfg.getint("core", "num_cores")
+    bar_offset = processor_index
     revisions = []
     filesize = os.path.getsize(dataset_file)/(1024**2)
-    with bz2.open(dataset_file, "rb") as data_file, tqdm(desc="[{i}]Pages".format(i=processor_index), unit="p", ncols=0, position=bar_offset) as page_counter:
+    with bz2.open(dataset_file, "rb") as data_file:
         carry_content = ""
         state = States.DEFAULT
-        for row in tqdm(data_file, desc="[{i}]Rows ".format(i=processor_index), unit="r", ncols=0, position=bar_offset+1):
+        for row in data_file:
             row_decoded = row.decode("utf-8")
             
             if state == States.DEFAULT:
@@ -129,17 +130,15 @@ def parse_file(dataset_file):
                 if row == b'  </page>\n':
                     state = States.DEFAULT
                     revisions += parse_page(carry_content, dataset_file)
-                    page_counter.update()
                     carry_content = ""
     
     ts_now_str = str(pd.datetime.now())[:-7].replace(" ","_")
-    dump_filename = os.path.join("storage_directory", "df_revisions-[{file}]-{ts_now}.p".format(file=os.path.basename(dataset_file), ts_now=ts_now_str))
+    dump_filename = os.path.join("storage_directory", "df_revisions-[{file}]{ts_now}.p".format(file=os.path.basename(dataset_file), ts_now=ts_now_str))
     print("Writing file: {fn}".format(fn=dump_filename))
     df_revisions = pd.DataFrame(revisions)
     df_revisions.to_pickle(dump_filename)
     
     return True    
 
-with Pool(8) as processor_pool:
-    success = list(tqdm(processor_pool.imap(parse_file, dataset_files), total=len(dataset_files)))
-    
+with Pool(cfg.getint("core", "num_cores"), maxtasksperchild=1) as processor_pool:
+    success = list(processor_pool.imap(parse_file, dataset_files[:100]))
