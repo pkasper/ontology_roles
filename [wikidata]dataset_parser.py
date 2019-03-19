@@ -141,4 +141,4 @@ def parse_file(dataset_file):
     return True    
 
 with Pool(cfg.getint("core", "num_cores"), maxtasksperchild=1) as processor_pool:
-    success = list(processor_pool.imap(parse_file, dataset_files[:100]))
+    success = list(processor_pool.imap(parse_file, dataset_files))
