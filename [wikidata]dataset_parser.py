@@ -29,7 +29,7 @@ from configparser import ConfigParser
 cfg = ConfigParser()
 cfg.read("config.cfg")
 
-dataset_directory = os.path.join(cfg.get("directory", "dataset"), cfg.get("directory", "wikidata_dataset"))
+dataset_directory = os.path.join(cfg.get("directory", "dataset"), cfg.get("dataset", "wikidata"))
 storage_directory = cfg.get("directory", "pickles")
 
 processed_files = [re.search(r"\[(.*)\]", x)[1] for x in os.listdir(storage_directory) if os.path.isfile(os.path.join(storage_directory, x))] 
@@ -57,10 +57,10 @@ def parse_page(page_content, dataset_file):
         print("Dump filename: {fn}".format(fn=dump_filename))
         with open(dump_filename, "w") as error_dump:
             error_dump.write(page_content)
+        print("Dump filename: {fn}".format(fn=dump_filename))
         
         
         print(e)
-        raise
         
     title = xml_content.find("title").text
     ns = xml_content.find("ns").text
@@ -139,10 +139,10 @@ def parse_file(dataset_file):
                     carry_content = ""
     
     ts_now_str = str(pd.datetime.now())[:-7].replace(" ","_")
-    dump_filename = os.path.join("storage_directory", "df_revisions-[{file}]{ts_now}.p".format(file=os.path.basename(dataset_file), ts_now=ts_now_str))
-    print("Writing file: {fn}".format(fn=dump_filename))
+    dump_filename = os.path.join(storage_directory, "df_revisions-[{file}]{ts_now}.p".format(file=os.path.basename(dataset_file), ts_now=ts_now_str))
     df_revisions = pd.DataFrame(revisions)
     df_revisions.to_pickle(dump_filename)
+    print("Writing file: {fn}".format(fn=dump_filename))
     
     return True    
 
