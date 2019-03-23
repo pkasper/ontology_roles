@@ -52,15 +52,16 @@ def parse_page(page_content, dataset_file):
         print(dataset_file)
         print(len(page_content))
         ts_now_str = str(pd.datetime.now())[:-7].replace(" ","_")
-        dump_filename = "error_dump-[{file}]{ts_now}.txt".format(file=dataset_file, ts_now=ts_now_str)
+        dump_filename = "error_dump-[{file}]{ts_now}.txt".format(file=os.path.basename(dataset_file), ts_now=ts_now_str)
         dump_filename = os.path.join(cfg.get("directory", "error_dumps"), dump_filename)
-        print("Dump filename: {fn}".format(fn=dump_filename))
+        print("PRE Dump filename: {fn}".format(fn=dump_filename))
         with open(dump_filename, "w") as error_dump:
             error_dump.write(page_content)
-        print("Dump filename: {fn}".format(fn=dump_filename))
+        print("POST Dump filename: {fn}".format(fn=dump_filename))
         
         
         print(e)
+        return None
         
     title = xml_content.find("title").text
     ns = xml_content.find("ns").text
@@ -135,7 +136,9 @@ def parse_file(dataset_file):
                 carry_content += row_decoded
                 if row == b'  </page>\n':
                     state = States.DEFAULT
-                    revisions += parse_page(carry_content, dataset_file)
+                    parsed_page = parse_page(carry_content, dataset_file)
+                    if parsed_page is not None:
+                        revisions += parsed_page
                     carry_content = ""
     
     ts_now_str = str(pd.datetime.now())[:-7].replace(" ","_")
