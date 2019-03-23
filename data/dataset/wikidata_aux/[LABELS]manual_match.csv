@@ -1,0 +1,31 @@
+match,label
+undo,REVERT
+undoing,REVERT
+undid,REVERT
+rv,REVERT
+revert,REVERT
+reverted,REVERT
+reverting,REVERT
+rb,REVERT
+rollback,REVERT
+rolled back,REVERT
+rolling back,REVERT
+restore,REVERT
+restored,REVERT
+rename,RENAME
+renaming,RENAME
+renamed,RENAME
+rm,REMOVE
+remove,REMOVE
+removed,REMOVE
+removing,REMOVE
+delete,REMOVE
+deleted,REMOVE
+deletion,REMOVE
+move,MOVE
+mv,MOVE
+moved,MOVE
+create,CREATE
+created,CREATE
+protected,PROTECT
+protecting,PROTECT
