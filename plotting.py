@@ -28,10 +28,10 @@ cfg = ConfigParser()
 cfg.read("config.cfg")
 
 
-def transition_matrix(_event_count, _pivot, _transition_count_pivot, _c_index, _filename):
+def transition_matrix(_figsize, _event_count, _pivot, _transition_count_pivot, _c_index, _filename):
     _pivot = lib.pivot_epsilon_value(_pivot, 0.001)
     sns.set(style="ticks", font_scale=4, rc={"xtick.major.size": 20, "xtick.major.width": 5, "ytick.major.size": 20, "ytick.major.width": 5})
-    figure, axis = plt.subplots(2, 2, sharex="col", figsize=(50, 60), gridspec_kw={'height_ratios': [1, 2], 'width_ratios': [15, 1]})
+    figure, axis = plt.subplots(2, 2, sharex="col", figsize=_figsize, gridspec_kw={'height_ratios': [1, 2], 'width_ratios': [15, 1]})
     axis[0][0].bar(np.arange(len(_event_count)), _event_count, color=colormap.get_static(_c_index), align='edge')
     axis[0][0].set_ylabel("# Edit Actions")
     #axis[0][0].set_ylim(0, 50000)
