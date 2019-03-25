@@ -36,7 +36,6 @@ def calc_distribution(_states, _sequence):
     u = v / v.sum()
     stat_dist = transition_matrix * u
     if not np.allclose(u, stat_dist):
-        print("FUUUU")
         print(len(_sequence))
         raise ValueError("dist not close!")
     return u, full_pivot
@@ -110,7 +109,16 @@ def stretch_pivot(_pivot, _labels):
     _pivot = _pivot.transpose()
     _pivot = _pivot.sort_index()
     _pivot = _pivot.fillna(0)
+
+    for x in _pivot.index:
+        if x not in _labels:
+            _pivot.drop(x, axis=0, inplace=True)
+
+    for x in _pivot.columns:
+        if x not in _labels:
+            _pivot.drop(x, axis=1, inplace=True)
     return _pivot
+
 
 def pivot_epsilon_value(_pivot, _epsilon):
     for c in _pivot.columns:

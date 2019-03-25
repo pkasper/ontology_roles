@@ -109,7 +109,7 @@ def k_means(_stat_dist_reduced, _num_kernels, _labels, _sample_silhouette_values
                  zs=[x[2] for x in _stat_dist_reduced],
                  c=[colormap.get_static(x) for x in _labels], s=100)
     figure.savefig(_filename + "_clusters.png", transparent=True, bbox_inches="tight")
-    figure.savefig(_filename + "_clusters.pdf", transparent=True, bbox_inches="tight")
+    #figure.savefig(_filename + "_clusters.pdf", transparent=True, bbox_inches="tight")
     with open(_filename + "_clusters.p", "wb") as pickle_file:
         dump_data = {
             "x": [x[0] for x in _stat_dist_reduced],
@@ -120,6 +120,18 @@ def k_means(_stat_dist_reduced, _num_kernels, _labels, _sample_silhouette_values
         pickle.dump(dump_data, pickle_file)
     print(_filename + "_clusters.png")
     print(_filename + "_clusters.pdf")
+    
+    
+    figure, axes = plt.subplots(nrows=1, ncols=3, figsize=(30, 10))
+    axes[0].scatter([x[0] for x in _stat_dist_reduced],[x[1] for x in _stat_dist_reduced], c=[colormap.get_static(x) for x in _labels], s=100)
+    axes[1].scatter([x[0] for x in _stat_dist_reduced],[x[2] for x in _stat_dist_reduced], c=[colormap.get_static(x) for x in _labels], s=100)
+    axes[2].scatter([x[1] for x in _stat_dist_reduced],[x[2] for x in _stat_dist_reduced], c=[colormap.get_static(x) for x in _labels], s=100)
+    figure.tight_layout()
+    figure.savefig(_filename + "_clusters_planar.png", transparent=True, bbox_inches="tight")
+    #figure.savefig(_filename + "_clusters_planar.pdf", transparent=True, bbox_inches="tight")
+    print(_filename + "_clusters_planar.png")
+    print(_filename + "_clusters_planar.pdf")
+    
 
     figure, axis = plt.subplots(figsize=(25, 20))
     # axis = figure.add_subplot(133)
