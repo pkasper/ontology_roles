@@ -17,29 +17,35 @@ import colormap
 import lib
 
 import sys
+import os
 import math
 import pickle
 from tabulate import tabulate
+import pandas as pd
 
+from configparser import ConfigParser
+cfg = ConfigParser()
+cfg.read("config.cfg")
 
 
 def transition_matrix(_event_count, _pivot, _transition_count_pivot, _c_index, _filename):
     _pivot = lib.pivot_epsilon_value(_pivot, 0.001)
     sns.set(style="ticks", font_scale=4, rc={"xtick.major.size": 20, "xtick.major.width": 5, "ytick.major.size": 20, "ytick.major.width": 5})
-    figure, axis = plt.subplots(2, 2, sharex="col", figsize=(25, 30), gridspec_kw={'height_ratios': [1, 2], 'width_ratios': [15, 1]})
+    figure, axis = plt.subplots(2, 2, sharex="col", figsize=(50, 60), gridspec_kw={'height_ratios': [1, 2], 'width_ratios': [15, 1]})
     axis[0][0].bar(np.arange(len(_event_count)), _event_count, color=colormap.get_static(_c_index), align='edge')
     axis[0][0].set_ylabel("# Edit Actions")
-    axis[0][0].set_ylim(0, 50000)
+    #axis[0][0].set_ylim(0, 50000)
     axis[0][1].remove()
 
     cbar_sections = np.linspace(0, 1, 11)
     sns.heatmap(_pivot, ax=axis[1][0], linewidths=.5, cbar=True, cbar_ax=axis[1][1], cmap=colormap.get_gradient(_c_index), cbar_kws={"ticks": cbar_sections, "boundaries": cbar_sections})
 
+    """
     for label in axis[1][0].get_xticklabels():
         label.set_text(LABEL_NAMES(label.get_text()))
     for label in axis[1][0].get_yticklabels():
         label.set_text(LABEL_NAMES(label.get_text()))
-
+    """
     axis[1][0].set_xticklabels(axis[1][0].get_xticklabels())
     axis[1][0].set_yticklabels(axis[1][0].get_yticklabels())
 
