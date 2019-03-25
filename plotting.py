@@ -436,3 +436,49 @@ def dominance(_df, _filename):
     figure.savefig(_filename + "_clusters.pdf", transparent=True, bbox_inches="tight")
     print(_filename + "_clusters.png")
     print(_filename + "_clusters.pdf")
+    
+def aics_bics(_data, _filename):
+    figure, axes = plt.subplots(len(_data), figsize=(20, 15))
+
+    for axis_index, label_level in enumerate(_data):
+
+        plot_data = {"x": [], "y": []}
+        for x, y in sorted(_data[label_level]["aics"].items()):
+            if x >= len(_data[label_level]["aics"]) - 3:
+                continue
+            plot_data['x'].append(x)
+            plot_data['y'].append(y)
+        plot_data['x'] = np.asarray(plot_data['x'])
+        plot_data['y'] = np.asarray(plot_data['y'])
+        plot_data['y'] = plot_data['y'] - plot_data['y'].max()
+        axes[axis_index].plot(plot_data['x'],
+                              plot_data['y'],
+                              label="AICS")
+        axes[axis_index].set_title("Label Level: " + str(label_level))
+        axes[axis_index].set_yscale("symlog")
+
+        right_axis = axes[axis_index].twinx()
+
+        plot_data = {"x": [], "y": []}
+        for x, y in sorted(_data[label_level]["bics"].items()):
+            if x >= len(_data[label_level]["bics"]) - 3:
+                continue
+            plot_data['x'].append(x)
+            plot_data['y'].append(y)
+        plot_data['x'] = np.asarray(plot_data['x'])
+        plot_data['y'] = np.asarray(plot_data['y'])
+        plot_data['y'] = plot_data['y'] - plot_data['y'].max()
+        right_axis.plot(plot_data['x'],
+                        plot_data['y'],
+                        label="BICS")
+        right_axis.set_yscale("symlog")
+
+        sns.despine(ax=axes[axis_index], top=True, bottom=False, left=False, right=False, trim=True)
+        axes[axis_index].legend()
+        print("label level", label_level)
+    print("FIG CREATED")
+    figure.savefig(_filename + ".png", transparent=True, bbox_inches="tight")
+    figure.savefig(_filename + ".pdf", transparent=True, bbox_inches="tight")
+    print(_filename + ".png")
+    print(_filename + ".pdf")
+    plt.close("all")
