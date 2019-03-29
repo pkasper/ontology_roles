@@ -118,6 +118,9 @@ def parse_page(page_content, dataset_file):
     
     
 def parse_file(dataset_file):   
+    split_parsing = cfg.getboolean("core", "split_parsing")
+    split_limit = cfg.getint("core", "split_limit")
+    split_index = 0
     processor_index = current_process()._identity[0] % cfg.getint("core", "num_cores")
     bar_offset = processor_index
     revisions = []
@@ -141,12 +144,26 @@ def parse_file(dataset_file):
                     if parsed_page is not None:
                         revisions += parsed_page
                     carry_content = ""
+            if split_parsing:
+                if len(revisions) == split_limit:
+                    dump_filename = os.path.join(cfg.get("directory", "pickles_split"), "df_revisions-[{file}]{ts_now}[{r_from}-{r_to}].p".format(file=os.path.basename(dataset_file), 
+                                                                                                                                                  ts_now=ts_now_str, 
+                                                                                                                                                  r_from=split_index*split_limit+1, 
+                                                                                                                                                  r_to=(split_index+1)*split_limit
+                                                                                                                                                 )
+                                                )
+                    df_revisions = pd.DataFrame(revisions)
+                    df_revisions.to_pickle(dump_filename)
+                    print("Writing split file: {fn}".format(fn=dump_filename))
+                    split_index +=1
+                    revisions = []
     
     ts_now_str = str(pd.datetime.now())[:-7].replace(" ","_")
-    dump_filename = os.path.join(storage_directory, "df_revisions-[{file}]{ts_now}.p".format(file=os.path.basename(dataset_file), ts_now=ts_now_str))
-    df_revisions = pd.DataFrame(revisions)
-    df_revisions.to_pickle(dump_filename)
-    print("Writing file: {fn}".format(fn=dump_filename))
+    if not split_parsing:
+        dump_filename = os.path.join(storage_directory, "df_revisions-[{file}]{ts_now}.p".format(file=os.path.basename(dataset_file), ts_now=ts_now_str))
+        df_revisions = pd.DataFrame(revisions)
+        df_revisions.to_pickle(dump_filename)
+        print("Writing file: {fn}".format(fn=dump_filename))
     
     return True    
 
