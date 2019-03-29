@@ -35,6 +35,7 @@ storage_directory = cfg.get("directory", "pickles")
 processed_files = [re.search(r"\[(.*)\]", x)[1] for x in os.listdir(storage_directory) if os.path.isfile(os.path.join(storage_directory, x))] 
 dataset_files = sorted([os.path.join(dataset_directory, f) for f in os.listdir(dataset_directory) if os.path.isfile(os.path.join(dataset_directory, f)) and f not in processed_files])
 
+print(dataset_files)
 
 class States:
     DEFAULT = 0
