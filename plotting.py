@@ -38,6 +38,11 @@ def transition_matrix(_figsize, _event_count, _pivot, _transition_count_pivot, _
     axis[0][0].bar(np.arange(len(_event_count)), _event_count, color=colormap.get_static(_c_index), align='edge')
     axis[0][0].set_ylabel("# Edit Actions")
     axis[0][0].set_yscale("log")
+    if logscale:
+        axis[0][0].set_ylim(bottom=1)
+    else:
+        axis[0][0].set_ylim(bottom=0)
+        
     #axis[0][0].set_ylim(0, 50000)
     axis[0][1].remove()
 
