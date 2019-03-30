@@ -35,7 +35,33 @@ dataset_directory = os.path.join(cfg.get("directory", "dataset"), cfg.get("datas
 storage_directory = cfg.get("directory", "pickles")
 
 processed_files = [re.search(r"\[(.*)\]", x)[1] for x in os.listdir(storage_directory) if os.path.isfile(os.path.join(storage_directory, x))] 
-dataset_files = sorted([os.path.join(dataset_directory, f) for f in os.listdir(dataset_directory) if os.path.isfile(os.path.join(dataset_directory, f)) and f not in processed_files])
+files_to_process = sorted([f for f in os.listdir(dataset_directory) if os.path.isfile(os.path.join(dataset_directory, f)) and f not in processed_files])
+
+
+if cfg.getboolean("core", "ramfs_use"):
+    print("USING RAMFS")
+    working_dir = "wikidata_parser"
+    ramfs_dir = cfg.get("core", "ramfs_dir")
+    
+    ramfs_dir = os.path.join(ramfs_dir, working_dir)
+    if not os.path.isdir(ramfs_dir):
+        os.mkdir(ramfs_dir)
+        
+    ramfs_files = os.listdir(ramfs_dir)
+    
+    for f in files_to_process:
+        if f in ramfs_files:
+            continue
+        else:
+            shutil.copy2(os.path.join(dataset_directory, f), os.path.join(ramfs_dir, f))
+            print("Copying file: {f}".format(f=f))
+    
+    dataset_files = sorted([os.path.join(ramfs_dir, f) for f in files_to_process])
+else:
+    dataset_files = sorted([os.path.join(dataset_directory, f) for f in files_to_process])
+    
+print(dataset_files)
+exit()
 
 print(dataset_files)
 
