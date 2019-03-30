@@ -53,15 +53,14 @@ if cfg.getboolean("core", "ramfs_use"):
         if f in ramfs_files:
             continue
         else:
-            shutil.copy2(os.path.join(dataset_directory, f), os.path.join(ramfs_dir, f))
             print("Copying file: {f}".format(f=f))
+            shutil.copy2(os.path.join(dataset_directory, f), os.path.join(ramfs_dir, f))
+            print("Done...")
     
     dataset_files = sorted([os.path.join(ramfs_dir, f) for f in files_to_process])
 else:
     dataset_files = sorted([os.path.join(dataset_directory, f) for f in files_to_process])
-    
-print(dataset_files)
-exit()
+
 
 print(dataset_files)
 
