@@ -240,24 +240,32 @@ def parse_page(page_content, dataset_file):
     
     
 def parse_file(dataset_file):   
-    curr_proc = current_process()._identity[0]
+    try:
+        curr_proc = current_process()._identity[0]
+    except Exception as e:  # we have no current_process which means it is probably started not as a multiprocess thing
+        curr_proc = 1
     split_parsing = cfg.getboolean("core", "split_parsing")
     split_limit = cfg.getint("core", "split_limit")
     split_index = 0
     page_counter = 0
-    processor_index = current_process()._identity[0] % cfg.getint("core", "num_cores")
+    processor_index = curr_proc % cfg.getint("core", "num_cores")
     bar_offset = processor_index
     revisions = []
     filesize = os.path.getsize(dataset_file)/(1024**2)
-    with bz2.open(dataset_file, "rb") as data_file, tqdm(position=(curr_proc-1) * 2, desc=os.path.basename(dataset_file)) as progress_bar, tqdm(position=(curr_proc-1) * 2 + 1, desc="line_buffer") as line_buffer:
+    open_func = None
+    if dataset_file.endswith("bz2"):
+        open_func = bz2.open
+    else:
+        open_func = open
+    with open_func(dataset_file, "rb") as data_file, tqdm(position=(bar_offset-1) * 2, desc=os.path.basename(dataset_file)) as progress_bar, tqdm(position=(bar_offset-1) * 2 + 1, desc="line_buffer") as line_buffer:
         carry_content = ""
         state = States.DEFAULT
-        for i,row in enumerate(data_file): #tqdm(data_file, position=curr_proc-1, desc=os.path.basename(dataset_file)):
+        for i,row in enumerate(data_file):
             row_decoded = row.decode("utf-8")
+            line_buffer.update()
             
             if state == States.DEFAULT:
                 if row == b'  <page>\n':
-                    line_buffer.update()
                     carry_content += row_decoded
                     state = States.PAGE
             
@@ -274,10 +282,10 @@ def parse_file(dataset_file):
                         page_counter +=1
                         progress_bar.update()
                     carry_content = ""
-                    line_buffer.n = 0
-                    line_buffer.last_print_n = 0
             if split_parsing:
                 if page_counter == split_limit:
+                    
+                    ts_now_str = str(pd.datetime.now())[:-7].replace(" ","_")
                     dump_filename = os.path.join(cfg.get("directory", "pickles_split"), "df_revisions-[{file}]{ts_now}[{r_from}-{r_to}].p".format(file=os.path.basename(dataset_file), 
                                                                                                                                                   ts_now=ts_now_str, 
                                                                                                                                                   r_from=split_index*split_limit+1, 
@@ -300,5 +308,8 @@ def parse_file(dataset_file):
     
     return True    
 
-with Pool(cfg.getint("core", "num_cores"), maxtasksperchild=1) as processor_pool:
-    success = list(processor_pool.imap(parse_file, dataset_files))
+for f in dataset_files:
+    parse_file(f)
+
+#with Pool(cfg.getint("core", "num_cores"), maxtasksperchild=1) as processor_pool:
+#    success = list(processor_pool.imap(parse_file, dataset_files))
