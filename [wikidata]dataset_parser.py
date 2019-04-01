@@ -68,6 +68,7 @@ class States:
     DEFAULT = 0
     SITEINFO = 1
     PAGE = 2
+    TEXT = 3
 
 
 def parse_page_iter(page_content, dataset_file):
@@ -134,7 +135,10 @@ def parse_page_iter(page_content, dataset_file):
                 user_ip = ""
 
             if revision.find("comment") is None:
-                note = revision.find("text").text
+                if revision.find("text") is None:
+                    note = ""
+                else:
+                    note = revision.find("text").text
                 comment = ""
             else:
                 note = ""
@@ -209,7 +213,10 @@ def parse_page(page_content, dataset_file):
                 user_ip = ""
                 
             if revision.find("comment") is None:
-                note = revision.find("text").text
+                if revision.find("text") is None:
+                    note = ""
+                else:
+                    note = revision.find("text").text
                 comment = ""
             else:
                 note = ""
@@ -260,8 +267,19 @@ def parse_file(dataset_file):
     with open_func(dataset_file, "rb") as data_file, tqdm(position=(bar_offset-1) * 2, desc=os.path.basename(dataset_file)) as progress_bar, tqdm(position=(bar_offset-1) * 2 + 1, desc="line_buffer") as line_buffer:
         carry_content = ""
         state = States.DEFAULT
+        text_state = States.DEFAULT
         for i,row in enumerate(data_file):
+            tmp_idx = "S: {s}, Pages: {p}, Line {l}, Len: {len}".format(s=state,p=page_counter, l=i, len=len(row))
+            if row.startswith(b"      <text"):
+                text_state = States.TEXT
+            elif row.endswith(b"</sha1>\n"):
+                text_state = States.DEFAULT
+            
+            if text_state == States.TEXT:
+                continue
+            
             row_decoded = row.decode("utf-8")
+
             line_buffer.update()
             
             if state == States.DEFAULT:
@@ -271,6 +289,7 @@ def parse_file(dataset_file):
             
             elif state == States.PAGE:
                 carry_content += row_decoded
+
                 if row == b'  </page>\n':
                     state = States.DEFAULT
                     if cfg.getboolean("core", "iter_parsing"):
@@ -308,8 +327,8 @@ def parse_file(dataset_file):
     
     return True    
 
-for f in dataset_files:
-    parse_file(f)
+#for f in dataset_files:
+#    parse_file(f)
 
-#with Pool(cfg.getint("core", "num_cores"), maxtasksperchild=1) as processor_pool:
-#    success = list(processor_pool.imap(parse_file, dataset_files))
+with Pool(cfg.getint("core", "num_cores"), maxtasksperchild=1) as processor_pool:
+    success = list(processor_pool.imap(parse_file, dataset_files))
