@@ -65,10 +65,10 @@ else:
 print(dataset_files)
 
 class States:
+    IGNORE = -1
     DEFAULT = 0
     SITEINFO = 1
     PAGE = 2
-    TEXT = 3
 
 
 def parse_page_iter(page_content, dataset_file):
@@ -188,6 +188,7 @@ def parse_page(page_content, dataset_file):
         
         
         print(e)
+        raise
         return None
         
     title = xml_content.find("title").text
@@ -199,7 +200,7 @@ def parse_page(page_content, dataset_file):
             ts_raw = revision.find("timestamp").text
             timestamp = pd.to_datetime(ts_raw, utc=True)
             if not (ts_min <= timestamp <= ts_max):
-                continue
+                pass#continue
             user = revision.find("contributor")
             if "deleted" in user.attrib:
                 continue
@@ -264,23 +265,22 @@ def parse_file(dataset_file):
         open_func = bz2.open
     else:
         open_func = open
-    with open_func(dataset_file, "rb") as data_file, tqdm(position=(bar_offset-1) * 2, desc=os.path.basename(dataset_file)) as progress_bar, tqdm(position=(bar_offset-1) * 2 + 1, desc="line_buffer") as line_buffer:
+    with open_func(dataset_file, "rb") as data_file, tqdm(position=(bar_offset-1), desc=os.path.basename(dataset_file)) as progress_bar:
         carry_content = ""
         state = States.DEFAULT
         text_state = States.DEFAULT
         for i,row in enumerate(data_file):
             tmp_idx = "S: {s}, Pages: {p}, Line {l}, Len: {len}".format(s=state,p=page_counter, l=i, len=len(row))
             if row.startswith(b"      <text"):
-                text_state = States.TEXT
+                text_state = States.IGNORE
             elif row.endswith(b"</sha1>\n"):
                 text_state = States.DEFAULT
             
-            if text_state == States.TEXT:
+            if text_state == States.IGNORE:
                 continue
             
             row_decoded = row.decode("utf-8")
 
-            line_buffer.update()
             
             if state == States.DEFAULT:
                 if row == b'  <page>\n':
@@ -319,6 +319,7 @@ def parse_file(dataset_file):
                     page_counter = 0
     
     ts_now_str = str(pd.datetime.now())[:-7].replace(" ","_")
+    print("parsing complete")
     if not split_parsing:
         dump_filename = os.path.join(storage_directory, "df_revisions-[{file}]{ts_now}.p".format(file=os.path.basename(dataset_file), ts_now=ts_now_str))
         df_revisions = pd.DataFrame(revisions)
@@ -327,7 +328,7 @@ def parse_file(dataset_file):
     
     return True    
 
-#for f in dataset_files:
+#for i,f in enumerate(dataset_files):
 #    parse_file(f)
 
 with Pool(cfg.getint("core", "num_cores"), maxtasksperchild=1) as processor_pool:
