@@ -319,7 +319,6 @@ def parse_file(dataset_file):
                     page_counter = 0
     
     ts_now_str = str(pd.datetime.now())[:-7].replace(" ","_")
-    print("parsing complete")
     if not split_parsing:
         dump_filename = os.path.join(storage_directory, "df_revisions-[{file}]{ts_now}.p".format(file=os.path.basename(dataset_file), ts_now=ts_now_str))
         df_revisions = pd.DataFrame(revisions)
