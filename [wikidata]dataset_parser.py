@@ -72,8 +72,8 @@ class States:
 
 
 def parse_page_iter(page_content, dataset_file):
-    ts_min = pd.to_datetime("2017-01-01T00:00:00Z", utc=True)
-    ts_max = pd.to_datetime("2018-12-31T23:59:59Z", utc=True)
+    ts_min = pd.to_datetime(cfg.get("preprocessing", "timestamp_from"), utc=True)
+    ts_max = pd.to_datetime(cfg.get("preprocessing", "timestamp_to"), utc=True)
     revisions = []
     
     try:
@@ -169,8 +169,8 @@ def parse_page_iter(page_content, dataset_file):
     
     
 def parse_page(page_content, dataset_file):
-    ts_min = pd.to_datetime("2017-01-01T00:00:00Z", utc=True)
-    ts_max = pd.to_datetime("2018-12-31T23:59:59Z", utc=True)
+    ts_min = pd.to_datetime(cfg.get("preprocessing", "timestamp_from"), utc=True)
+    ts_max = pd.to_datetime(cfg.get("preprocessing", "timestamp_to"), utc=True)
     revisions = []
     try:
         xml_parser = etree.XMLParser(huge_tree=True)
@@ -200,7 +200,7 @@ def parse_page(page_content, dataset_file):
             ts_raw = revision.find("timestamp").text
             timestamp = pd.to_datetime(ts_raw, utc=True)
             if not (ts_min <= timestamp <= ts_max):
-                pass#continue
+                continue
             user = revision.find("contributor")
             if "deleted" in user.attrib:
                 continue
