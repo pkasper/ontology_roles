@@ -1,70 +1,70 @@
-action_base,label
-wbcreateclaim-create,CLAIM_CREATE
-wbsetdescription-add,DESCRIPTION_ADD
-wbsetreference-add,REFERENCE_ADD
-wbsetclaim-create,CLAIM_CREATE
-wbsetlabel-add,LABEL_ADD
-wbsetdescription-set,DESCRIPTION_UPDATE
-wbeditentity-update,ENTITY_UPDATE
-wbsetqualifier-add,QUALIFIER_ADD
-wbsetsitelink-add,SITELINK_ADD
-wbsetclaim-update,CLAIM_UPDATE
-wbremoveclaims-remove,CLAIM_REMOVE
-wbeditentity-create,ENTITY_CREATE
-wbsetlabel-set,LABEL_UPDATE
-wbsetaliases-add,ALIAS_ADD
-clientsitelink-update,SITELINK_UPDATE
-wbmergeitems-to,MERGE
-wbmergeitems-from,MERGE
-wbcreateredirect,ENTITY_REDIRECT
-clientsitelink-remove,SITELINK_REMOVE
-wbsetsitelink-remove,SITELINK_REMOVE
-wbsetclaimvalue,CLAIM_UPDATEVALUE
-wbeditentity-create-item,ENTITY_CREATE
-wbeditentity-override,ENTITY_OVERRIDE
-wbsetdescription-remove,DESCRIPTION_REMOVE
-undo,REVERT
-REVERT,REVERT_MANUAL
-CREATE,CREATE_MANUAL
-wbsetaliases-update,ALIAS_UPDATE
-wbsetlabel-remove,LABEL_REMOVE
-wbsetaliases-remove,ALIAS_REMOVE
-wbsetsitelink-set,SITELINK_UPDATE
-wbsetaliases-set,ALIAS_UPDATE
-wbremovequalifiers-remove,QUALIFIER_REMOVE
-restore,REVERT
-wbsetlabeldescriptionaliases,ALIAS_UPDATE
-wbsetqualifier-update,QUALIFIER_UPDATE
-add-form,FORM_ADD
-wbremovereferences-remove,REFERENCE_REMOVE
-wbsetsitelink-set-both,SITELINK_UPDATE
-wbeditentity-create-lexeme,LEXEME_CREATE
-add-sense,SENSE_ADD
-wbsetreference-set,REFERENCE_UPDATE
-REMOVE,REMOVE_MANUAL
-MOVE,MOVE_MANUAL
-wbremovereferences-update,REFERENCE_REMOVE
-wbsetsitelink-add-both,SITELINK_UPDATE
-RENAME,RENAME_MANUAL
-PROTECT,PROTECT_MANUAL
-add-form-grammatical-features,FORM_UPDATE
-set-sense-glosses,SENSE_UPDATE
-add-sense-glosses,SENSE_ADD
-add-form-representations,FORM_UPDATE
-wblinktitles-connect,SITELINK_UPDATE
-set-form-representations,FORM_UPDATE
-wbeditentity-create-property,PROPERTY_CREATE
-wbremoveclaims-update,CLAIM_REMOVE
-update-form-grammatical-features,FORM_UPDATE
-remove-form,FORM_REMOVE
-update-form-representations,FORM_UPDATE
-update-form-elements,FORM_UPDATE
-remove-form-grammatical-features,FORM_UPDATE
-wblmergelexemes-from,LEXEME_UPDATE
-wblmergelexemes-to,LEXEME_UPDATE
-remove-sense,SENSE_REMOVE
-update-sense-glosses,SENSE_UPDATE
-wblinktitles-create,SITELINK_ADD
-remove-form-representations,FORM_UPDATE
-remove-sense-glosses,SENSE_REMOVE
-wbsetsitelink-set-badges,SITELINK_BADGE
+,action_base,label,label_readable
+0,wbcreateclaim-create,CLAIM_CREATE,Create Claim
+1,wbsetdescription-add,DESCRIPTION_ADD,Add Description
+2,wbsetreference-add,REFERENCE_ADD,Add Reference
+3,wbsetclaim-create,CLAIM_CREATE,Create Claim
+4,wbsetlabel-add,LABEL_ADD,Add Label
+5,wbsetdescription-set,DESCRIPTION_UPDATE,Edit Description
+6,wbeditentity-update,ENTITY_UPDATE,Edit Item
+7,wbsetqualifier-add,QUALIFIER_ADD,Add Qualifier
+8,wbsetsitelink-add,SITELINK_ADD,Add Sitelink
+9,wbsetclaim-update,CLAIM_UPDATE,Edit Claim
+10,wbremoveclaims-remove,CLAIM_REMOVE,Remove Claim
+11,wbeditentity-create,ENTITY_CREATE,Create Item
+12,wbsetlabel-set,LABEL_UPDATE,Edit Label
+13,wbsetaliases-add,ALIAS_ADD,Add Item Alias
+14,clientsitelink-update,SITELINK_UPDATE,Edit Sitelink
+15,wbmergeitems-to,MERGE,Merge Items
+16,wbmergeitems-from,MERGE,Merge Items
+17,wbcreateredirect,ENTITY_REDIRECT,Redirect Item
+18,clientsitelink-remove,SITELINK_REMOVE,Remove Sitelink
+19,wbsetsitelink-remove,SITELINK_REMOVE,Remove Sitelink
+20,wbsetclaimvalue,CLAIM_UPDATEVALUE,Edit Claim Value
+21,wbeditentity-create-item,ENTITY_CREATE,Create Item
+22,wbeditentity-override,ENTITY_OVERRIDE,Override Item
+23,wbsetdescription-remove,DESCRIPTION_REMOVE,Remove Description
+24,undo,REVERT,Revert Item
+25,REVERT,REVERT_MANUAL,Revert Item
+26,CREATE,CREATE_MANUAL,Create Item
+27,wbsetaliases-update,ALIAS_UPDATE,Edit Alias
+28,wbsetlabel-remove,LABEL_REMOVE,Remove Label
+29,wbsetaliases-remove,ALIAS_REMOVE,Remove Alias
+30,wbsetsitelink-set,SITELINK_UPDATE,Edit Sitelink
+31,wbsetaliases-set,ALIAS_UPDATE,Edit Alias
+32,wbremovequalifiers-remove,QUALIFIER_REMOVE,Remove Qualifier
+33,restore,REVERT,Revert Item
+34,wbsetlabeldescriptionaliases,ALIAS_UPDATE,Edit Alias
+35,wbsetqualifier-update,QUALIFIER_UPDATE,Edit Qualifier
+36,add-form,FORM_ADD,Add Form
+37,wbremovereferences-remove,REFERENCE_REMOVE,Remove Reference
+38,wbsetsitelink-set-both,SITELINK_UPDATE,Edit Sitelink
+39,wbeditentity-create-lexeme,LEXEME_CREATE,Create Lexme
+40,add-sense,SENSE_ADD,Add Sense
+41,wbsetreference-set,REFERENCE_UPDATE,Edit Reference
+42,REMOVE,REMOVE_MANUAL,Remove Item
+43,MOVE,MOVE_MANUAL,Move Item
+44,wbremovereferences-update,REFERENCE_REMOVE,Remove Reference
+45,wbsetsitelink-add-both,SITELINK_UPDATE,Edit Sitelink
+46,RENAME,RENAME_MANUAL,Rename Item
+47,PROTECT,PROTECT_MANUAL,Protect Item
+48,add-form-grammatical-features,FORM_UPDATE,Edit Form
+49,set-sense-glosses,SENSE_UPDATE,Edit Sense
+50,add-sense-glosses,SENSE_ADD,Add Sense
+51,add-form-representations,FORM_UPDATE,Edit Form
+52,wblinktitles-connect,SITELINK_UPDATE,Edit Sitelink
+53,set-form-representations,FORM_UPDATE,Edit Form
+54,wbeditentity-create-property,PROPERTY_CREATE,Create Property
+55,wbremoveclaims-update,CLAIM_REMOVE,Remove Claim
+56,update-form-grammatical-features,FORM_UPDATE,Edit Form
+57,remove-form,FORM_REMOVE,Remove Form
+58,update-form-representations,FORM_UPDATE,Edit Form
+59,update-form-elements,FORM_UPDATE,Edit Form
+60,remove-form-grammatical-features,FORM_UPDATE,Edit Form
+61,wblmergelexemes-from,LEXEME_UPDATE,Edit Lexme
+62,wblmergelexemes-to,LEXEME_UPDATE,Edit Lexme
+63,remove-sense,SENSE_REMOVE,Remove Sense
+64,update-sense-glosses,SENSE_UPDATE,Edit Sense
+65,wblinktitles-create,SITELINK_ADD,Add Sitelink
+66,remove-form-representations,FORM_UPDATE,Edit Form
+67,remove-sense-glosses,SENSE_REMOVE,Remove Sense
+68,wbsetsitelink-set-badges,SITELINK_BADGE,Add Sitelink Badge
