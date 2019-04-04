@@ -35,7 +35,7 @@ def transition_matrix(_figsize, _event_count, _pivot, _transition_count_pivot, _
     
     if logscale:
         _event_count = np.array(_event_count) + 1 # avoid log(0)
-         axis[0][0].set_yscale("log")
+        axis[0][0].set_yscale("log")
     axis[0][0].bar(np.arange(len(_event_count)), _event_count, color=colormap.get_static(_c_index), align='edge')
     axis[0][0].set_ylabel("# Edit Actions")
    
