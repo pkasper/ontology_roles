@@ -121,8 +121,9 @@ def stretch_pivot(_pivot, _labels):
 
 
 def pivot_epsilon_value(_pivot, _epsilon):
+    _pivot = _pivot.copy()
     for c in _pivot.columns:
         for i in _pivot.index:
-            if abs(_pivot[c][i]) <= _epsilon:
-                _pivot[c][i] = np.nan
+            if abs(_pivot.loc[c,i]) <= _epsilon:
+                _pivot.loc[c,i] = np.nan
     return _pivot
