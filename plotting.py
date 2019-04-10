@@ -1,6 +1,11 @@
 import matplotlib
 import mpl_toolkits
 matplotlib.rc('pdf', fonttype=42)
+matplotlib.rc('ps',fonttype = 42)
+matplotlib.rc('pdf',fonttype = 42)
+matplotlib.rcParams['ps.useafm'] = True
+matplotlib.rcParams['pdf.use14corefonts'] = True
+matplotlib.rcParams['axes.unicode_minus'] = False
 
 from matplotlib import pyplot as plt
 
@@ -31,31 +36,32 @@ cfg.read("config.cfg")
 def transition_matrix(_figsize, _event_count, _pivot, _transition_count_pivot, _c_index, _filename, upper_limit=False, logscale=False, stat_dist=None):
     _pivot = lib.pivot_epsilon_value(_pivot, 0.001)
     sns.set(style="ticks", font_scale=4, rc={"xtick.major.size": 20, "xtick.major.width": 5, "ytick.major.size": 20, "ytick.major.width": 5})
-    figure, axis = plt.subplots(2, 2, sharex="col", figsize=_figsize, gridspec_kw={'height_ratios': [1, 2], 'width_ratios': [15, 1]})
+    figure, axis = plt.subplots(2, 1, sharex="col", figsize=_figsize, gridspec_kw={'height_ratios': [1, 2], 'width_ratios': [15, 1]})
     if logscale:
         _event_count = np.array(_event_count) + 1 # avoid log(0)
-        axis[0][0].set_yscale("log")
-    axis[0][0].bar(np.arange(len(_event_count))+0.1, _event_count, color=colormap.get_static(_c_index), align='edge', width=0.4, label="Counts")
+        axis[0]set_yscale("log")
+    axis[0].bar(np.arange(len(_event_count))+0.1, _event_count, color=colormap.get_static(_c_index), align='edge', width=0.4, label="Counts")
     
     if stat_dist is not None:
-        stat_axis = axis[0][0].twinx()
+        stat_axis = axis[0].twinx()
         stat_axis.bar(np.arange(len(stat_dist[0]))+0.5, stat_dist[0], yerr=stat_dist[1], capsize=1, color=(0,0,0,0), edgecolor =colormap.get_static(_c_index), align='edge', width=0.4, hatch="/", label="Stat. dist")
         stat_axis.set_ylabel("Stat. dist")
+        sns.despine(ax=stat_axis, top=True, bottom=False, left=False, right=True, trim=True)
 
-    axis[0][0].set_ylabel("# Edit Actions")
+    axis[0].set_ylabel("# Edit Actions")
    
     if logscale:
-        axis[0][0].set_ylim(bottom=1)
+        axis[0].set_ylim(bottom=1)
     else:
-        axis[0][0].set_ylim(bottom=0)
+        axis[0].set_ylim(bottom=0)
     
     if upper_limit is not False:
-        axis[0][0].set_ylim(top=upper_limit)
-    #axis[0][0].set_ylim(0, 50000)
-    axis[0][1].remove()
+        axis[0].set_ylim(top=upper_limit)
+    #axis[0].set_ylim(0, 50000)
+    axis[0].remove()
 
     cbar_sections = np.linspace(0, 1, 11)
-    sns.heatmap(_pivot, ax=axis[1][0], linewidths=.5, cbar=True, cbar_ax=axis[1][1], cmap=colormap.get_gradient(_c_index), cbar_kws={"ticks": cbar_sections, "boundaries": cbar_sections})
+    sns.heatmap(_pivot, ax=axis[1][0], linewidths=.5, cbar=True, cmap=colormap.get_gradient(_c_index), cbar_kws={"ticks": cbar_sections, "boundaries": cbar_sections})
 
     """
     for label in axis[1][0].get_xticklabels():
@@ -63,12 +69,12 @@ def transition_matrix(_figsize, _event_count, _pivot, _transition_count_pivot, _
     for label in axis[1][0].get_yticklabels():
         label.set_text(LABEL_NAMES(label.get_text()))
     """
-    axis[1][0].set_xticklabels(axis[1][0].get_xticklabels())
-    axis[1][0].set_yticklabels(axis[1][0].get_yticklabels())
+    axis[1].set_xticklabels(axis[1][0].get_xticklabels())
+    axis[1].set_yticklabels(axis[1][0].get_yticklabels())
 
     sns.despine(ax=axis[0][0], top=True, bottom=False, left=False, right=True, trim=True)
-    axis[1][0].set_xlabel("To Action")
-    axis[1][0].set_ylabel("From Action")
+    axis[1].set_xlabel("To Action")
+    axis[1].set_ylabel("From Action")
     figure.tight_layout()
     figure.savefig(_filename + ".png", transparent=True, bbox_inches="tight")
     figure.savefig(_filename + ".pdf", transparent=True, bbox_inches="tight")
