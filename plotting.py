@@ -39,7 +39,8 @@ def transition_matrix(_figsize, _event_count, _pivot, _transition_count_pivot, _
     figure, axis = plt.subplots(2, 1, sharex="col", figsize=_figsize, gridspec_kw={'height_ratios': [1, 2], 'width_ratios': [15, 1]})
     if logscale:
         _event_count = np.array(_event_count) + 1 # avoid log(0)
-        axis[0]set_yscale("log")
+        axis[0].set_yscale("log")
+        axis[0].tick_params(axis='y', which='minor', bottom=False)
     axis[0].bar(np.arange(len(_event_count))+0.1, _event_count, color=colormap.get_static(_c_index), align='edge', width=0.4, label="Counts")
     
     if stat_dist is not None:
@@ -61,7 +62,7 @@ def transition_matrix(_figsize, _event_count, _pivot, _transition_count_pivot, _
     axis[0].remove()
 
     cbar_sections = np.linspace(0, 1, 11)
-    sns.heatmap(_pivot, ax=axis[1][0], linewidths=.5, cbar=True, cmap=colormap.get_gradient(_c_index), cbar_kws={"ticks": cbar_sections, "boundaries": cbar_sections})
+    sns.heatmap(_pivot, ax=axis[1], linewidths=.5, cbar=True, cmap=colormap.get_gradient(_c_index), cbar_kws={"ticks": cbar_sections, "boundaries": cbar_sections})
 
     """
     for label in axis[1][0].get_xticklabels():
