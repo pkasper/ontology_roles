@@ -1,8 +1,7 @@
 import matplotlib
 import mpl_toolkits
+matplotlib.rc('ps', fonttype=42)
 matplotlib.rc('pdf', fonttype=42)
-matplotlib.rc('ps',fonttype = 42)
-matplotlib.rc('pdf',fonttype = 42)
 matplotlib.rcParams['ps.useafm'] = True
 matplotlib.rcParams['pdf.use14corefonts'] = True
 matplotlib.rcParams['axes.unicode_minus'] = False
@@ -25,6 +24,7 @@ import sys
 import os
 import math
 import pickle
+import itertools
 from tabulate import tabulate
 import pandas as pd
 
@@ -84,7 +84,7 @@ def transition_matrix(_figsize, _event_count, _pivot, _transition_count_pivot, _
     plt.close("all")
 
 
-def k_means(_stat_dist_reduced, _num_kernels, _labels, _sample_silhouette_values, _silhouette_avg, _filename):
+def k_means(_stat_dist_reduced, _variance_ratios, _num_kernels, _labels, _sample_silhouette_values, _silhouette_avg, _filename):
     sns.set(style="ticks", font_scale=4, rc={"xtick.major.size": 20, "xtick.major.width": 5, "ytick.major.size": 20, "ytick.major.width": 5})
     figure, axis = plt.subplots(figsize=(25, 20))
 #    figure = plt.figure(figsize=(30, 10))
@@ -147,12 +147,21 @@ def k_means(_stat_dist_reduced, _num_kernels, _labels, _sample_silhouette_values
     
     
     figure, axes = plt.subplots(nrows=1, ncols=3, figsize=(30, 10))
-    axes[0].scatter([x[0] for x in _stat_dist_reduced],[x[1] for x in _stat_dist_reduced], c=[colormap.get_static(x) for x in _labels], s=100)
-    axes[1].scatter([x[0] for x in _stat_dist_reduced],[x[2] for x in _stat_dist_reduced], c=[colormap.get_static(x) for x in _labels], s=100)
-    axes[2].scatter([x[1] for x in _stat_dist_reduced],[x[2] for x in _stat_dist_reduced], c=[colormap.get_static(x) for x in _labels], s=100)
+    
+    for i, (x, y) in enumerate(itertools.combinations(np.arange(3), 2)):
+        axes[i].scatter([s[x] for s in _stat_dist_reduced],[s[y] for s in _stat_dist_reduced], c=[colormap.get_static(l) for l in _labels], s=100)
+        axes[i].set_title("Retained variance: {v:.2f}".format(v=_variance_ratios[x]+_variance_ratios[y]), fontsize=25)
+        
+        axes[i].set_xlabel("PC {x}".format(x=x+1))
+        axes[i].set_ylabel("PC {y}".format(y=y+1))
+        axes[i].xaxis.set_major_locator(plt.NullLocator())
+        axes[i].yaxis.set_major_locator(plt.NullLocator())
+        sns.despine(ax=axes[i])
+    
+
     figure.tight_layout()
     figure.savefig(_filename + "_clusters_planar.png", transparent=True, bbox_inches="tight")
-    #figure.savefig(_filename + "_clusters_planar.pdf", transparent=True, bbox_inches="tight")
+    figure.savefig(_filename + "_clusters_planar.pdf", transparent=True, bbox_inches="tight")
     print(_filename + "_clusters_planar.png")
     print(_filename + "_clusters_planar.pdf")
     
