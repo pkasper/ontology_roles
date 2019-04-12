@@ -83,6 +83,82 @@ def transition_matrix(_figsize, _event_count, _pivot, _transition_count_pivot, _
     print(_filename + ".pdf")
     plt.close("all")
 
+    
+def cluster_centroids(_centroids, _labels, _filename):
+    bar_width = 1 / (len(_centroids) + 1)
+    bar_offset = bar_width / 2
+    
+    # get the overall min/max for scaling of the axis
+    overall_min = min([c[0].min() for c in _centroids.values()])
+    overall_max = max([c[0].max() for c in _centroids.values()])
+    
+    figure, axis = plt.subplots(figsize=(20, 4))
+    for centroid_index, centroid in _centroids.items():
+        axis.bar(
+            np.arange(len(_labels)) + bar_offset + (centroid_index*bar_width),
+            centroid[0],
+            yerr=centroid[1], 
+            capsize=1,
+            width=bar_width,
+            align="edge",
+            color=colormap.get_static(centroid_index),
+            label="Cluster {n}".format(n=centroid_index)
+        )
+    axis.legend(title="Editor Role", ncol=len(_centroids))
+    #axis.set_yscale("log")
+    axis.set_ylabel("Stat. dist.")
+    axis.set_xlabel("Labels")
+    
+    axis.set_xticks(np.arange(len(_labels)) + 0.5, minor=False)
+    for label_index, label in enumerate(axis.get_xticklabels()):
+        label.set_text(_labels[label_index])
+
+    axis.set_xticklabels(axis.get_xticklabels(), rotation="45", ha="right" )
+    
+    figure.tight_layout()
+    sns.despine(ax=axis, top=True, bottom=False, left=False, right=True, trim=False)
+    
+    figure.savefig(_filename + ".png", transparent=True, bbox_inches="tight")
+    figure.savefig(_filename + ".pdf", transparent=True, bbox_inches="tight")
+    print(_filename + ".png")
+    print(_filename + ".pdf")
+    plt.close("all")
+    
+
+def centroids_bar_plot(_centroids, _dimension_labels, _centroid_order, _filename):
+
+    bar_width = 1/(len(_centroids) + 2)
+    overall_min = min([min(c['values']) for c in _centroids])
+    overall_max = max([max(c['values']) for c in _centroids])
+    figure, axis = plt.subplots(figsize=(10, 4))
+    for centroid_index, centroid in enumerate(_centroids):
+        axis.bar(np.arange(len(centroid['values'])) - 0.3 + bar_width * centroid_index, centroid['values'], width=bar_width, label=centroid['label'], color=colormap.get_static(_centroid_order[centroid_index]))
+
+    axis.set_xticks(np.arange(len(_dimension_labels)), minor=False)
+    for label_index, label in enumerate(axis.get_xticklabels()):
+        label.set_text(_dimension_labels[label_index])
+
+    #axis.set_yticks([])
+
+    axis.set_xticklabels(axis.get_xticklabels(), rotation="45")
+    #axis.set_ylim(overall_min, overall_max)
+
+    axis.legend(title="Centroid")
+
+    axis.set_yscale("log")
+
+    axis.set_ylabel("$log$ (Edit Action Probability)")
+    axis.set_xlabel("Labels")
+
+    figure.tight_layout()
+    sns.despine(ax=axis, top=True, bottom=False, left=False, right=True, trim=True)
+
+    figure.savefig(_filename + ".png", transparent=True, bbox_inches="tight")
+    figure.savefig(_filename + ".pdf", transparent=True, bbox_inches="tight")
+    print(_filename + ".png")
+    print(_filename + ".pdf")
+    plt.close("all")
+    
 
 def k_means(_stat_dist_reduced, _variance_ratios, _num_kernels, _labels, _sample_silhouette_values, _silhouette_avg, _filename):
     sns.set(style="ticks", font_scale=4, rc={"xtick.major.size": 20, "xtick.major.width": 5, "ytick.major.size": 20, "ytick.major.width": 5})
@@ -369,40 +445,6 @@ def aics_bics(_data, _filename):
     print(_filename + ".pdf")
     plt.close("all")
 
-
-def centroids_bar_plot(_centroids, _dimension_labels, _centroid_order, _filename):
-
-    bar_width = 1/(len(_centroids) + 2)
-    overall_min = min([min(c['values']) for c in _centroids])
-    overall_max = max([max(c['values']) for c in _centroids])
-    figure, axis = plt.subplots(figsize=(10, 4))
-    for centroid_index, centroid in enumerate(_centroids):
-        axis.bar(np.arange(len(centroid['values'])) - 0.3 + bar_width * centroid_index, centroid['values'], width=bar_width, label=centroid['label'], color=colormap.get_static(_centroid_order[centroid_index]))
-
-    axis.set_xticks(np.arange(len(_dimension_labels)), minor=False)
-    for label_index, label in enumerate(axis.get_xticklabels()):
-        label.set_text(_dimension_labels[label_index])
-
-    #axis.set_yticks([])
-
-    axis.set_xticklabels(axis.get_xticklabels(), rotation="45")
-    #axis.set_ylim(overall_min, overall_max)
-
-    axis.legend(title="Centroid")
-
-    axis.set_yscale("log")
-
-    axis.set_ylabel("$log$ (Edit Action Probability)")
-    axis.set_xlabel("Labels")
-
-    figure.tight_layout()
-    sns.despine(ax=axis, top=True, bottom=False, left=False, right=True, trim=True)
-
-    figure.savefig(_filename + ".png", transparent=True, bbox_inches="tight")
-    figure.savefig(_filename + ".pdf", transparent=True, bbox_inches="tight")
-    print(_filename + ".png")
-    print(_filename + ".pdf")
-    plt.close("all")
 
 
 def dominance(_df, _filename):
