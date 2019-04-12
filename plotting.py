@@ -150,7 +150,7 @@ def k_means(_stat_dist_reduced, _variance_ratios, _num_kernels, _labels, _sample
     
     for i, (x, y) in enumerate(itertools.combinations(np.arange(3), 2)):
         axes[i].scatter([s[x] for s in _stat_dist_reduced],[s[y] for s in _stat_dist_reduced], c=[colormap.get_static(l) for l in _labels], s=100)
-        axes[i].set_title("Retained variance: {v:.2f}".format(v=_variance_ratios[x]+_variance_ratios[y]), fontsize=25)
+        axes[i].set_title("Retained variance: {v:.2f}".format(v=_variance_ratios[x]+_variance_ratios[y]), fontsize=30)
         
         axes[i].set_xlabel("PC {x}".format(x=x+1))
         axes[i].set_ylabel("PC {y}".format(y=y+1))
