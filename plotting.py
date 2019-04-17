@@ -36,7 +36,7 @@ cfg.read("config.cfg")
 def transition_matrix(_figsize, _event_count, _pivot, _transition_count_pivot, _c_index, _filename, upper_limit=False, logscale=False, stat_dist=None):
     _pivot = lib.pivot_epsilon_value(_pivot, 0.001)
     sns.set(style="ticks", font_scale=4, rc={"xtick.major.size": 20, "xtick.major.width": 5, "ytick.major.size": 20, "ytick.major.width": 5, "ytick.minor.size": 15, "ytick.minor.width": 5})
-    figure, axis = plt.subplots(2, 2, sharex="col", figsize=_figsize, gridspec_kw={'height_ratios': [1, 2], 'width_ratios': [15, 1]})
+    figure, axis = plt.subplots(2, 2, sharex="col", figsize=_figsize, gridspec_kw={'height_ratios': [1, 2], 'width_ratios': [15, 1], "hspace": 0.05, "wspace": 0.05})
     if logscale:
         _event_count = np.array(_event_count) + 1 # avoid log(0)
         axis[0][0].set_yscale("log")
@@ -82,6 +82,14 @@ def transition_matrix(_figsize, _event_count, _pivot, _transition_count_pivot, _
     figure.savefig(_filename + ".pdf", transparent=True, bbox_inches="tight")
     print(_filename + ".png")
     print(_filename + ".pdf")
+    
+    axis[1][0].set_ylabel(None)
+    axis[1][0].set_yticklabels(["" for x in axis[1][0].get_yticklabels()])
+    figure.savefig(_filename + "_trim.png", transparent=True, bbox_inches="tight")
+    figure.savefig(_filename + "_trim.pdf", transparent=True, bbox_inches="tight")
+    print(_filename + "_trim.png")
+    print(_filename + "_trim.pdf")
+    
     plt.close("all")
 
     
@@ -94,7 +102,7 @@ def cluster_centroids(_centroids, _labels, _filename):
     overall_min = min([c[0].min() for c in _centroids.values()])
     overall_max = max([c[0].max() for c in _centroids.values()])
     
-    figure, axis = plt.subplots(figsize=(60, 24))
+    figure, axis = plt.subplots(figsize=(50, 12))
     for centroid_index, centroid in _centroids.items():
         axis.bar(
             np.arange(len(_labels)) + bar_offset + (centroid_index*bar_width),
@@ -106,7 +114,6 @@ def cluster_centroids(_centroids, _labels, _filename):
             color=colormap.get_static(centroid_index),
             label="Cluster {n}".format(n=centroid_index)
         )
-    axis.legend(title="Editor Role", ncol=4)
     #axis.set_yscale("log")
     axis.set_ylabel("Stat. dist.")
     axis.set_xlabel("Labels")
@@ -124,6 +131,15 @@ def cluster_centroids(_centroids, _labels, _filename):
     figure.savefig(_filename + ".pdf", transparent=True, bbox_inches="tight")
     print(_filename + ".png")
     print(_filename + ".pdf")
+    
+    legend_fig, legend_ax = plt.subplots(figsize=(8, 12))
+    legend_ax.legend(*axis.get_legend_handles_labels(), loc='upper left', title="Editor Role", ncol=2)
+    legend_ax.axis('off')
+    legend_fig.savefig(_filename + "_legend.png", transparent=True, bbox_inches="tight")
+    legend_fig.savefig(_filename + "_legend.pdf", transparent=True, bbox_inches="tight")
+    print(_filename + "_legend.png")
+    print(_filename + "_legend.pdf")
+    
     plt.close("all")
     
 
