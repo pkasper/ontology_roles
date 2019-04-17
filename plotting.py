@@ -94,7 +94,7 @@ def cluster_centroids(_centroids, _labels, _filename):
     overall_min = min([c[0].min() for c in _centroids.values()])
     overall_max = max([c[0].max() for c in _centroids.values()])
     
-    figure, axis = plt.subplots(figsize=(10, 4))
+    figure, axis = plt.subplots(figsize=(60, 24))
     for centroid_index, centroid in _centroids.items():
         axis.bar(
             np.arange(len(_labels)) + bar_offset + (centroid_index*bar_width),
@@ -106,7 +106,7 @@ def cluster_centroids(_centroids, _labels, _filename):
             color=colormap.get_static(centroid_index),
             label="Cluster {n}".format(n=centroid_index)
         )
-    axis.legend(title="Editor Role", ncol=len(_centroids))
+    axis.legend(title="Editor Role", ncol=4)
     #axis.set_yscale("log")
     axis.set_ylabel("Stat. dist.")
     axis.set_xlabel("Labels")
