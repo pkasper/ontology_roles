@@ -71,11 +71,12 @@ def transition_matrix(_figsize, _event_count, _pivot, _transition_count_pivot, _
     for label in axis[1][0].get_yticklabels():
         label.set_text(LABEL_NAMES(label.get_text()))
     """
-    axis[1][0].set_xticklabels(axis[1][0].get_xticklabels())
+    axis[1][0].set_xticklabels(axis[1][0].get_xticklabels(), rotation="45", ha="right")
     axis[1][0].set_yticklabels(axis[1][0].get_yticklabels())
 
     axis[1][0].set_xlabel("To Action")
     axis[1][0].set_ylabel("From Action")
+    
     figure.tight_layout()
     figure.savefig(_filename + ".png", transparent=True, bbox_inches="tight")
     figure.savefig(_filename + ".pdf", transparent=True, bbox_inches="tight")
@@ -85,6 +86,7 @@ def transition_matrix(_figsize, _event_count, _pivot, _transition_count_pivot, _
 
     
 def cluster_centroids(_centroids, _labels, _filename):
+    #sns.set(font_scale=2) 
     bar_width = 1 / (len(_centroids) + 1)
     bar_offset = bar_width / 2
     
@@ -92,7 +94,7 @@ def cluster_centroids(_centroids, _labels, _filename):
     overall_min = min([c[0].min() for c in _centroids.values()])
     overall_max = max([c[0].max() for c in _centroids.values()])
     
-    figure, axis = plt.subplots(figsize=(20, 4))
+    figure, axis = plt.subplots(figsize=(10, 4))
     for centroid_index, centroid in _centroids.items():
         axis.bar(
             np.arange(len(_labels)) + bar_offset + (centroid_index*bar_width),
@@ -113,7 +115,7 @@ def cluster_centroids(_centroids, _labels, _filename):
     for label_index, label in enumerate(axis.get_xticklabels()):
         label.set_text(_labels[label_index])
 
-    axis.set_xticklabels(axis.get_xticklabels(), rotation="45", ha="right" )
+    axis.set_xticklabels(axis.get_xticklabels(), rotation="45", ha="right")
     
     figure.tight_layout()
     sns.despine(ax=axis, top=True, bottom=False, left=False, right=True, trim=False)
