@@ -48,7 +48,7 @@ def transition_matrix(_figsize, _event_count, _pivot, _transition_count_pivot, _
     if stat_dist is not None:
         stat_axis = axis[0][0].twinx()
         stat_axis.bar(np.arange(len(stat_dist[0]))+0.5, stat_dist[0], yerr=stat_dist[1], capsize=1, color=(0,0,0,0), edgecolor= colormap.get_static(_c_index), align='edge', width=0.45, hatch="/", label="Stat. dist")
-        stat_axis.set_ylabel("Stat. dist")
+        stat_axis.set_ylabel("Probability")
         sns.despine(ax=stat_axis, top=True, bottom=False, left=False, right=False, trim=False)
 
     sns.despine(ax=axis[0][0], top=True, bottom=False, left=False, right=True, trim=False)
@@ -83,6 +83,9 @@ def transition_matrix(_figsize, _event_count, _pivot, _transition_count_pivot, _
     print(_filename + ".png")
     print(_filename + ".pdf")
     
+    if stat_dist is not None:
+        stat_axis.set_ylabel(None)
+    axis[0][0].set_ylabel(None)
     axis[1][0].set_ylabel(None)
     axis[1][0].set_yticklabels(["" for x in axis[1][0].get_yticklabels()])
     figure.savefig(_filename + "_trim.png", transparent=True, bbox_inches="tight")
@@ -115,8 +118,8 @@ def cluster_centroids(_centroids, _labels, _filename):
             label="Cluster {n}".format(n=centroid_index)
         )
     #axis.set_yscale("log")
-    axis.set_ylabel("Stat. dist.")
-    axis.set_xlabel("Labels")
+    axis.set_ylabel("Probability")
+    axis.set_xlabel("Edit Action")
     
     axis.set_xticks(np.arange(len(_labels)) + 0.5, minor=False)
     for label_index, label in enumerate(axis.get_xticklabels()):
@@ -133,7 +136,7 @@ def cluster_centroids(_centroids, _labels, _filename):
     print(_filename + ".pdf")
     
     legend_fig, legend_ax = plt.subplots(figsize=(8, 12))
-    legend_ax.legend(*axis.get_legend_handles_labels(), loc='upper left', title="Editor Role", ncol=2)
+    legend_ax.legend(*axis.get_legend_handles_labels(), loc='upper left', title="Editor Role", ncol=len(_centroids)//4)
     legend_ax.axis('off')
     legend_fig.savefig(_filename + "_legend.png", transparent=True, bbox_inches="tight")
     legend_fig.savefig(_filename + "_legend.pdf", transparent=True, bbox_inches="tight")
