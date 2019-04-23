@@ -37,3 +37,7 @@ def get_diverging(_i, _j):
     _i = min(_i, len(shuffle_seed) - 1)
     _j = min(_j, len(shuffle_seed) - 1)
     return sns.diverging_palette(shuffle_seed[_i], shuffle_seed[_j], s=s, l=l, as_cmap=True)
+
+
+def get_static_plotly(_i, alpha=1):
+    return "rgba({colorstring}, {alpha})".format(colorstring=",".join([str(int(x*255)) for x in get_static(_i)]), alpha=alpha)
