@@ -117,7 +117,7 @@ def stretch_pivot(_pivot, _labels):
     for x in _pivot.columns:
         if x not in _labels:
             _pivot.drop(x, axis=1, inplace=True)
-    return _pivot
+    return _pivot.loc[_labels, _labels]
 
 
 def pivot_epsilon_value(_pivot, _epsilon):
