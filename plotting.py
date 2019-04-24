@@ -49,6 +49,7 @@ def transition_matrix(_figsize, _event_count, _pivot, _transition_count_pivot, _
         stat_axis = axis[0][0].twinx()
         stat_axis.bar(np.arange(len(stat_dist[0]))+0.5, stat_dist[0], yerr=stat_dist[1], capsize=1, color=(0,0,0,0), edgecolor= colormap.get_static(_c_index), align='edge', width=0.45, hatch="/", label="Stat. dist")
         stat_axis.set_ylabel("Probability")
+        stat_axis.set_ylim(top=stat_dist[3])
         sns.despine(ax=stat_axis, top=True, bottom=False, left=False, right=False, trim=False)
 
     sns.despine(ax=axis[0][0], top=True, bottom=False, left=False, right=True, trim=False)
